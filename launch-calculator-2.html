@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Калькулятор Запуска</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: #000;
+            color: #fff;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #4ADE80;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #888;
+        }
+
+        .input-section {
+            background: #1A1A1A;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 15px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: #0A0A0A;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 18px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .input-group input:focus {
+            outline: 2px solid #4ADE80;
+        }
+
+        .price-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .price-btn {
+            background: #1A1A1A;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .price-btn:hover {
+            background: #2A2A2A;
+            border-color: #4ADE80;
+        }
+
+        .optimal-badge {
+            background: #0F3A2C;
+            border: 1px solid #4ADE80;
+            border-radius: 12px;
+            padding: 14px;
+            color: #4ADE80;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4ADE80 0%, #22C55E 100%);
+            border: none;
+            border-radius: 16px;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+            transition: transform 0.2s;
+        }
+
+        .calculate-btn:active {
+            transform: scale(0.98);
+        }
+
+        .result-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .income-card {
+            background: linear-gradient(135deg, #0F3A2C 0%, #1A5F47 100%);
+            border-radius: 24px;
+            padding: 32px 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(74, 222, 128, 0.15);
+        }
+
+        .income-card .label {
+            font-size: 14px;
+            color: #86EFAC;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .income-card .amount {
+            font-size: 56px;
+            font-weight: 800;
+            color: #4ADE80;
+            margin-bottom: 12px;
+            letter-spacing: -2px;
+        }
+
+        .income-card .period {
+            font-size: 16px;
+            color: #86EFAC;
+        }
+
+        .breakdown-section {
+            background: #1A1A1A;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .breakdown-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #4ADE80;
+            margin-bottom: 20px;
+        }
+
+        .breakdown-item {
+            background: #0A0A0A;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breakdown-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .breakdown-item .label {
+            font-size: 15px;
+            color: #888;
+        }
+
+        .breakdown-item .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .funnel-section {
+            background: #1A1A1A;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .funnel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            color: #4ADE80;
+            margin-bottom: 20px;
+        }
+
+        .funnel-step {
+            margin-bottom: 20px;
+        }
+
+        .funnel-step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .funnel-step-number {
+            width: 32px;
+            height: 32px;
+            background: #4ADE80;
+            color: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .funnel-step-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .funnel-step-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #4ADE80;
+            margin-left: auto;
+        }
+
+        .funnel-substep {
+            background: #0A0A0A;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 44px;
+        }
+
+        .funnel-substep .label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .funnel-substep .value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #2A2A2A;
+            border-radius: 3px;
+            margin: 16px 44px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ADE80 0%, #22C55E 100%);
+            border-radius: 3px;
+            transition: width 1s ease;
+        }
+
+        .price-calculation {
+            background: #0A0A0A;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .price-calculation .icon {
+            font-size: 24px;
+        }
+
+        .price-calculation .text {
+            font-size: 15px;
+            color: #888;
+        }
+
+        .yearly-potential {
+            background: linear-gradient(135deg, #0F3A2C 0%, #1A5F47 100%);
+            border-radius: 24px;
+            padding: 32px 24px;
+            margin-bottom: 20px;
+        }
+
+        .yearly-potential .icon-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .yearly-potential .icon {
+            font-size: 32px;
+        }
+
+        .yearly-potential .title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #4ADE80;
+        }
+
+        .yearly-potential .amount {
+            font-size: 48px;
+            font-weight: 800;
+            color: #4ADE80;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .yearly-info {
+            background: #0F3A2C;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .yearly-info .label {
+            font-size: 14px;
+            color: #86EFAC;
+            margin-bottom: 6px;
+        }
+
+        .yearly-info .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .comparison {
+            background: #0F3A2C;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comparison .icon {
+            font-size: 20px;
+        }
+
+        .comparison .text {
+            font-size: 14px;
+            color: #86EFAC;
+        }
+
+        .comparison .highlight {
+            font-weight: 700;
+            color: #4ADE80;
+        }
+
+        .warning-card {
+            background: linear-gradient(135deg, #4A1A1A 0%, #6B2424 100%);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .warning-card .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .warning-card .title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #FCA5A5;
+            margin-bottom: 16px;
+        }
+
+        .warning-card .amount {
+            font-size: 48px;
+            font-weight: 800;
+            color: #EF4444;
+            margin-bottom: 8px;
+        }
+
+        .warning-card .subtitle {
+            font-size: 14px;
+            color: #FCA5A5;
+            margin-bottom: 20px;
+        }
+
+        .warning-card .description {
+            font-size: 15px;
+            color: #FECACA;
+            line-height: 1.6;
+        }
+
+        .warning-card .highlight {
+            font-weight: 700;
+            color: #4ADE80;
+        }
+
+        .cta-section {
+            background: #1A1A1A;
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .cta-section .icon-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .cta-section .description {
+            font-size: 15px;
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .free-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #4ADE80;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .cta-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .cta-text {
+            font-size: 15px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        .cta-highlight {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4ADE80;
+            margin-bottom: 24px;
+        }
+
+        .cta-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4ADE80 0%, #22C55E 100%);
+            border: none;
+            border-radius: 16px;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            transition: transform 0.2s;
+        }
+
+        .cta-btn:active {
+            transform: scale(0.98);
+        }
+
+        .cta-features {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .cta-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: #4ADE80;
+        }
+
+        .back-btn {
+            width: 100%;
+            background: #1A1A1A;
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #888;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #2A2A2A;
+            border-color: #4ADE80;
+            color: #fff;
+        }
+
+        .timeline-section {
+            background: #1A1A1A;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .timeline-title {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background: #4ADE80;
+            border-radius: 50%;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 9px;
+            top: 20px;
+            width: 2px;
+            height: 100%;
+            background: #333;
+        }
+
+        .timeline-content {
+            background: #0F3A2C;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .timeline-period {
+            font-size: 12px;
+            color: #86EFAC;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-event {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .timeline-amount {
+            font-size: 22px;
+            font-weight: 700;
+            color: #4ADE80;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Форма ввода -->
+        <div id="input-screen">
+            <div class="header">
+                <h1>КАЛЬКУЛЯТОР ЗАПУСКА 🚀</h1>
+                <p>Узнай свой потенциал за 30 секунд</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label>Подписчиков в Instagram</label>
+                    <input type="number" id="subscribers" value="1500" placeholder="0">
+                </div>
+
+                <div class="input-group">
+                    <label>Средние охваты Reels</label>
+                    <input type="number" id="reels" value="5000" placeholder="0">
+                </div>
+
+                <div class="input-group">
+                    <label>Просмотры Stories</label>
+                    <input type="number" id="stories" value="500" placeholder="0">
+                </div>
+
+                <div class="input-group">
+                    <label>Цена курса (₽)</label>
+                    <input type="number" id="price" value="30000" placeholder="0">
+                    <div class="price-buttons">
+                        <button class="price-btn" onclick="setPrice(15000)">15K</button>
+                        <button class="price-btn" onclick="setPrice(30000)">30K</button>
+                        <button class="price-btn" onclick="setPrice(50000)">50K</button>
+                        <button class="price-btn" onclick="setPrice(90000)">90K</button>
+                    </div>
+                </div>
+
+                <div class="optimal-badge">
+                    ✅ Оптимальный диапазон
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculate()">
+                Рассчитать доход 🚀
+            </button>
+        </div>
+
+        <!-- Результаты -->
+        <div id="result-screen" class="result-section">
+            <div class="income-card">
+                <div class="label">Твой доход за запуск</div>
+                <div class="amount" id="total-income">270 000 ₽</div>
+                <div class="period">за 30-60 дней</div>
+            </div>
+
+            <div class="breakdown-section">
+                <div class="breakdown-header">
+                    📊 Разбивка
+                </div>
+                <div class="breakdown-item">
+                    <span class="label">Лиды</span>
+                    <span class="value" id="leads-count">415</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="label">Перейдут в Telegram</span>
+                    <span class="value" id="telegram-count">145</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="label">Купят курс</span>
+                    <span class="value" id="buyers-count">9</span>
+                </div>
+            </div>
+
+            <div class="funnel-section">
+                <div class="funnel-header">
+                    🔍 Откуда эта цифра:
+                </div>
+
+                <div class="funnel-step">
+                    <div class="funnel-step-header">
+                        <div class="funnel-step-number">1</div>
+                        <div class="funnel-step-title">Потенциальных лидов</div>
+                        <div class="funnel-step-value" id="funnel-leads">415</div>
+                    </div>
+                    <div class="funnel-substep">
+                        <span class="label">15% подписчиков</span>
+                        <span class="value" id="subs-leads">225</span>
+                    </div>
+                    <div class="funnel-substep">
+                        <span class="label">+ 3% охватов Reels</span>
+                        <span class="value" id="reels-leads">150</span>
+                    </div>
+                    <div class="funnel-substep">
+                        <span class="label">+ 8% просмотров Stories</span>
+                        <span class="value" id="stories-leads">40</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 35%"></div>
+                    </div>
+                </div>
+
+                <div class="funnel-step">
+                    <div class="funnel-step-header">
+                        <div class="funnel-step-number">2</div>
+                        <div class="funnel-step-title">Перейдут в Telegram</div>
+                        <div class="funnel-step-value" id="funnel-telegram">145</div>
+                    </div>
+                </div>
+
+                <div class="funnel-step">
+                    <div class="funnel-step-header">
+                        <div class="funnel-step-number">3</div>
+                        <div class="funnel-step-title">Купят курс</div>
+                        <div class="funnel-step-value" id="funnel-buyers">9</div>
+                    </div>
+                </div>
+
+                <div class="funnel-step">
+                    <div class="funnel-step-header">
+                        <div class="funnel-step-number">4</div>
+                        <div class="funnel-step-title">Твоя цена курса</div>
+                        <div class="funnel-step-value" id="funnel-price">30 000 ₽</div>
+                    </div>
+                    <div class="price-calculation">
+                        <span class="icon">💰</span>
+                        <span class="text" id="calculation-formula">9 × 30 000₽ = 270 000₽</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="yearly-potential">
+                <div class="icon-row">
+                    <span class="icon">📅</span>
+                    <span class="title">Твой потенциал за год</span>
+                </div>
+                <div class="amount" id="yearly-income">945 000 ₽</div>
+                
+                <div class="yearly-info">
+                    <div class="label">3-4 запуска в год</div>
+                    <div class="value">3-4</div>
+                </div>
+                
+                <div class="yearly-info">
+                    <div class="label">Работа 2-3 месяца</div>
+                    <div class="value">9 мес отдых</div>
+                </div>
+                
+                <div class="comparison">
+                    <span class="icon">💼</span>
+                    <span class="text">Сравни с офисом: <span class="highlight">12 месяцев зарплаты за год</span></span>
+                </div>
+            </div>
+
+            <div class="timeline-section">
+                <div class="timeline-title">Открываешь продажи</div>
+                <div class="timeline-title" style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 20px;">7-14 дней запуска</div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-line"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-period">ЧЕРЕЗ 2 МЕСЯЦА</div>
+                        <div class="timeline-event">💰 Первые деньги</div>
+                        <div class="timeline-amount" id="timeline-amount">270 000 ₽ на счету</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-card">
+                <div class="icon">⏰</div>
+                <div class="title">Каждый день без запуска</div>
+                <div class="amount" id="daily-loss">2 589 ₽</div>
+                <div class="subtitle">упущенной выгоды</div>
+                <div class="description">
+                    Пока ты думаешь — теряешь деньги. Два месяца = <span class="highlight" id="two-months-amount">270 000 ₽</span> на счету.
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <div class="free-badge">
+                    🎁 БЕСПЛАТНО
+                </div>
+                <div class="cta-title">Получить разбор твоей идеи</div>
+                <div class="cta-text">Я лично посмотрю твою нишу и покажу</div>
+                <div class="cta-text">как превратить знания в</div>
+                <div class="cta-highlight" id="cta-monthly">78 750 ₽/месяц</div>
+                
+                <button class="cta-btn" onclick="openTelegramIdea()">
+                    💎 Получить разбор идеи →
+                </button>
+                
+                <button class="cta-btn" onclick="openYouTubeLesson()" style="background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%); margin-top: 12px;">
+                    ▶️ Смотреть бесплатный урок выхода на первые 500К →
+                </button>
+                
+                <div class="cta-features">
+                    <div class="cta-feature">✅ Бесплатно</div>
+                    <div class="cta-feature">✅ Без навязывания</div>
+                    <div class="cta-feature">⚡ Ответ в течение 24 часов</div>
+                </div>
+            </div>
+
+            <button class="back-btn" onclick="resetCalculator()">
+                ← Пересчитать с другими данными
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function setPrice(price) {
+            document.getElementById('price').value = price;
+        }
+
+        function calculate() {
+            // Получаем данные
+            const subscribers = parseInt(document.getElementById('subscribers').value) || 0;
+            const reels = parseInt(document.getElementById('reels').value) || 0;
+            const stories = parseInt(document.getElementById('stories').value) || 0;
+            const price = parseInt(document.getElementById('price').value) || 0;
+
+            // Расчеты
+            const subsLeads = Math.round(subscribers * 0.15);
+            const reelsLeads = Math.round(reels * 0.03);
+            const storiesLeads = Math.round(stories * 0.08);
+            const totalLeads = subsLeads + reelsLeads + storiesLeads;
+            
+            const telegramCount = Math.round(totalLeads * 0.35);
+            const buyersCount = Math.round(totalLeads * 0.022);
+            
+            const totalIncome = buyersCount * price;
+            const yearlyIncome = totalIncome * 3.5;
+            const dailyLoss = Math.round(totalIncome / 104);
+            const monthlyIncome = Math.round(yearlyIncome / 12);
+
+            // Обновляем DOM
+            document.getElementById('total-income').textContent = totalIncome.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('leads-count').textContent = totalLeads;
+            document.getElementById('telegram-count').textContent = telegramCount;
+            document.getElementById('buyers-count').textContent = buyersCount;
+            
+            document.getElementById('funnel-leads').textContent = totalLeads;
+            document.getElementById('subs-leads').textContent = subsLeads;
+            document.getElementById('reels-leads').textContent = reelsLeads;
+            document.getElementById('stories-leads').textContent = storiesLeads;
+            
+            document.getElementById('funnel-telegram').textContent = telegramCount;
+            document.getElementById('funnel-buyers').textContent = buyersCount;
+            document.getElementById('funnel-price').textContent = price.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('calculation-formula').textContent = 
+                `${buyersCount} × ${price.toLocaleString('ru-RU')}₽ = ${totalIncome.toLocaleString('ru-RU')}₽`;
+            
+            document.getElementById('yearly-income').textContent = yearlyIncome.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('timeline-amount').textContent = totalIncome.toLocaleString('ru-RU') + ' ₽ на счету';
+            document.getElementById('daily-loss').textContent = dailyLoss.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('two-months-amount').textContent = totalIncome.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('cta-monthly').textContent = monthlyIncome.toLocaleString('ru-RU') + ' ₽/месяц';
+
+            // Показываем результаты
+            document.getElementById('input-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function resetCalculator() {
+            document.getElementById('input-screen').style.display = 'block';
+            document.getElementById('result-screen').style.display = 'none';
+            window.scrollTo(0, 0);
+        }
+
+        // ============================================
+        // НАСТРОЙКИ ССЫЛОК - ИЗМЕНИТЕ ПОД СЕБЯ
+        // ============================================
+        
+        // Функция для кнопки "Получить разбор идеи"
+        function openTelegramIdea() {
+            // Ссылка с автоматическим сообщением для Влада
+            const telegramLink = 'https://t.me/Donchenko_Vladislav?text=Влад%20привет%20хочу%20бесплатный%20урок%20выхода%20на%20первые%20500к%20с%20запуска';
+            
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.openTelegramLink(telegramLink);
+            } else {
+                window.open(telegramLink, '_blank');
+            }
+        }
+
+        // Функция для кнопки "Бесплатный урок на YouTube"
+        function openYouTubeLesson() {
+            // 👇 ЗАМЕНИТЕ на вашу ссылку YouTube видео
+            const youtubeLink = 'https://www.youtube.com/watch?v=YOUR_VIDEO_ID';
+            
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.openLink(youtubeLink);
+            } else {
+                window.open(youtubeLink, '_blank');
+            }
+        }
+
+        // ============================================
+
+        // Для Telegram Mini App
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+            
+            // Адаптация под тему Telegram
+            if (tg.colorScheme === 'light') {
+                document.body.style.background = '#fff';
+                document.body.style.color = '#000';
+            }
+        }
+    </script>
+</body>
+</html>
